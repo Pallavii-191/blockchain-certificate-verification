@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SSGMCE Shegaon | Certificate Verification</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --navy: #0F2C59; --crimson: #800000; --gold: #C5A059; --bg: #F8FAFC; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { background: var(--bg); color: #1E293B; }
+    .top-bar { background: var(--crimson); color: #fff; padding: 6px 20px; font-size: 12px; display: flex; justify-content: space-between; }
+    header { background: var(--navy); color: #fff; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .seal { width: 55px; height: 55px; background: #fff; color: var(--navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Cinzel'; font-weight: 700; border: 2px solid var(--gold); font-size: 12px; }
+    .titles h1 { font-family: 'Cinzel'; font-size: 18px; }
+    .titles p { font-size: 12px; color: #F4E8C1; }
+    nav { background: #fff; display: flex; padding: 0 20px; border-bottom: 1px solid #E2E8F0; }
+    .tab { padding: 14px 20px; font-weight: 600; font-size: 14px; color: #64748B; border: none; background: none; cursor: pointer; border-bottom: 3px solid transparent; }
+    .tab.active { color: var(--navy); border-bottom-color: var(--crimson); }
+    .container { max-width: 900px; margin: 24px auto; padding: 0 16px; }
+    .panel { background: #fff; border-radius: 8px; border: 1px solid #E2E8F0; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+    .form-control { width: 100%; padding: 10px; font-size: 14px; border: 1px solid #CBD5E1; border-radius: 6px; outline: none; }
+    .btn { background: var(--navy); color: #fff; padding: 10px 20px; font-weight: 600; font-size: 14px; border: none; border-radius: 6px; cursor: pointer; }
+    .btn:hover { background: #1A365D; }
+    .cert-card { border: 6px double var(--gold); padding: 24px; background: #FFFDF9; text-align: center; margin-top: 20px; }
+    .cert-card h3 { font-family: 'Cinzel'; color: var(--navy); font-size: 20px; margin-bottom: 10px; }
+    .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: left; margin-top: 16px; font-size: 13px; background: #fff; padding: 12px; border: 1px solid #E2E8F0; border-radius: 6px; }
+    .error-box { background: #FEF2F2; color: #991B1B; border: 1px solid #FCA5A5; padding: 12px; border-radius: 6px; margin-top: 16px; font-size: 14px; }
+    .success-box { background: #F0FDF4; color: #166534; border: 1px solid #86EFAC; padding: 12px; border-radius: 6px; margin-top: 16px; font-size: 14px; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <span>Shri Gajanan Shikshan Sanstha's</span>
+    <span>Autonomous Institute | SGBAU Affiliated</span>
+  </div>
+  <header>
+    <div class="brand">
+      <div class="seal">SSGMCE</div>
+      <div class="titles">
+        <h1>Shri Sant Gajanan Maharaj College of Engineering</h1>
+        <p>Department of Computer Science & Engineering | Shegaon</p>
+      </div>
+    </div>
+  </header>
+  <nav>
+    <button class="tab active" onclick="showTab('verify')">Verify Certificate</button>
+    <button class="tab" onclick="showTab('issue')">Issue Certificate (Admin)</button>
+    <button class="tab" onclick="showTab('audit')">Project Details</button>
+  </nav>
+  <div class="container">
+    <!-- VERIFY TAB -->
+    <div id="verify" class="tab-content active">
+      <div class="panel">
+        <h2 style="color: var(--navy); font-family: 'Cinzel'; margin-bottom: 16px;">Verify Academic Credentials</h2>
+        <form action="/" method="GET">
+          <div class="form-group">
+            <label>Student Wallet Address</label>
+            <input type="text" name="studentAddress" class="form-control" placeholder="0x..." value="<%= typeof studentAddress !== 'undefined' ? studentAddress : '' %>" required />
+          </div>
+          <button type="submit" class="btn">Verify On Blockchain</button>
+        </form>
+
+        <% if (typeof certificate !== 'undefined' && certificate) { %>
+          <div class="cert-card">
+            <h3>OFFICIAL ACADEMIC CERTIFICATE</h3>
+            <p>SSGMCE Verification Portal — Ethereum Network</p>
+            <h2 style="color: var(--crimson); margin: 12px 0;"><%= certificate.studentName %></h2>
+            <div class="meta-grid">
+              <div><strong>Course:</strong> <%= certificate.courseName %></div>
+              <div><strong>Grade / Marks:</strong> <%= certificate.grade %></div>
+              <div><strong>Wallet Address:</strong> <%= certificate.studentAddress %></div>
+              <div><strong>Issued Date:</strong> <%= new Date(certificate.timestamp * 1000).toLocaleString() %></div>
+            </div>
+          </div>
+        <% } %>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="error-box"><%= error %></div>
+        <% } %>
+
+        <% if (typeof message !== 'undefined' && message) { %>
+          <div class="success-box"><%= message %></div>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- ISSUE TAB -->
+    <div id="issue" class="tab-content">
+      <div class="panel">
+        <h2 style="color: var(--navy); font-family: 'Cinzel'; margin-bottom: 16px;">Issue Digital Certificate</h2>
+        <form action="/issue" method="POST">
+          <div class="form-group">
+            <label>Student Wallet Address</label>
+            <input type="text" name="studentAddress" class="form-control" placeholder="0x..." required />
+          </div>
+          <div class="form-group">
+            <label>Student Name</label>
+            <input type="text" name="studentName" class="form-control" placeholder="e.g. Pallavi Pawar" required />
+          </div>
+          <div class="form-group">
+            <label>Course Name</label>
+            <input type="text" name="courseName" class="form-control" placeholder="e.g. Computer Science & Engineering" required />
+          </div>
+          <div class="form-group">
+            <label>Grade / Percentage</label>
+            <input type="text" name="grade" class="form-control" placeholder="e.g. A+" required />
+          </div>
+          <button type="submit" class="btn">Write to Blockchain</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- AUDIT TAB -->
+    <div id="audit" class="tab-content">
+      <div class="panel">
+        <h2 style="color: var(--navy); font-family: 'Cinzel'; margin-bottom: 16px;">Project Information</h2>
+        <p><strong>Department:</strong> Computer Science & Engineering</p>
+        <p><strong>Project Guide:</strong> Prof. Kandoi</p>
+        <p><strong>Team Members:</strong> Gayatri Pathak, Pallavi Pawar, Shrutika Rode, Vaishnavi Patil</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showTab(id) {
+      document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      if (event && event.target) {
+        event.target.classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>
